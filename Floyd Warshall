@@ -1,0 +1,34 @@
+import copy
+def floyd(mat,n):
+  dist = copy.deepcopy(mat)
+  for k in range(n):
+    for i in range(n):
+      for j in range(n):
+        if dist[i][k] != 999 and dist[k][j]!=999:
+          new_dist=dist[i][k] + dist[k][j]
+          if new_dist < dist[i][j]:
+            dist[i][j] = new_dist
+  return dist
+
+
+print("Enter number of nodes:")
+n=int(input())
+mat=[]
+print("Enter values for the following distances")
+for i in range(n):
+  row=[]
+  for j in range(n):
+    if (i==j):
+      row.append(0)
+      continue
+    value=int(input("Enter for "+str(i)+"->"+str(j)+"\t"))
+    row.append(value)
+  mat.append(row)
+
+
+dist=floyd(mat,n)
+print("All pair shortest path:")
+for i in range(n):
+  for j in range(n):
+    print(dist[i][j] ,end="\t")
+  print("\n")
