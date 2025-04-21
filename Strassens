@@ -1,36 +1,42 @@
 import numpy as np
 
-def add(A, B): return A + B
-def sub(A, B): return A - B
-
+def add(A,B):return A+B
+def sub(A,B):return A-B
 def strassen(A, B):
-    n = A.shape[0]
-    if n == 1:
-        return A * B
-    k = n // 2
-    A11, A12, A21, A22 = A[:k,:k], A[:k,k:], A[k:,:k], A[k:,k:]
-    B11, B12, B21, B22 = B[:k,:k], B[:k,k:], B[k:,:k], B[k:,k:]
+    n=int(A.shape[0])
+    if n==1:
+        return A*B
+    k=n//2
+    A11,A12,A21,A22=A[:k,:k],A[k:,:k],A[:k,k:],A[k:,k:]
+    B11,B12,B21,B22=B[:k,:k],B[k:,:k],B[:k,k:],B[k:,k:]
 
-    M1 = strassen(add(A11, A22), add(B11, B22))
-    M2 = strassen(add(A21, A22), B11)
-    M3 = strassen(A11, sub(B12, B22))
-    M4 = strassen(A22, sub(B21, B11))
-    M5 = strassen(add(A11, A12), B22)
-    M6 = strassen(sub(A21, A11), add(B11, B12))
-    M7 = strassen(sub(A12, A22), add(B21, B22))
+    P=strassen(add(A11,A22),add(B11,B22))
+    Q=strassen(B11,add(A21,A22))
+    R=strassen(A11,sub(B12,B22))
+    S=strassen(A22,sub(B21,B11))
+    T=strassen(B22,add(A11,A12))
+    U=strassen(add(A21,A11),add(B11,B22))
+    V=strassen(add(B21,B22),sub(A12,A22))
 
-    C11 = M1 + M4 - M5 + M7
-    C12 = M3 + M5
-    C21 = M2 + M4
-    C22 = M1 - M2 + M3 + M6
-    top = np.hstack((C11, C12))
-    bottom = np.hstack((C21, C22))
-    return np.vstack((top, bottom))
+    C11=P+S-T+V
+    C12=R+T
+    C21=Q+S
+    C22=P+R-Q+U
 
-n = int(input("Enter size of matrix (power of 2): "))
-print("Enter Matrix A:")
-A = np.array([list(map(int, input().split())) for _ in range(n)])
-print("Enter Matrix B:")
-B = np.array([list(map(int, input().split())) for _ in range(n)])
-print("Result:\n", strassen(A, B))
-# Time: O(n^log7), better than O(n^3)
+    top=np.hstack((C11,C12))
+    bottom=np.hstack((C21,C22))
+    return np.vstack((top,bottom))
+
+n=int(input("Enter the size of the matrix (must be a power of 2): "))
+
+A = np.zeros((n, n), dtype=int)
+B = np.zeros((n, n), dtype=int)
+for i in range(n):
+    for j in range(n):
+        A[i][j]=int(input(f"Enter element A[{i}][{j}]: "))
+for i in range(n):
+    for j in range(n):
+        B[i][j]=int(input(f"Enter element B[{i}][{j}]: "))
+strassen_result = strassen(A, B)
+print("Result of Strassen's multiplication:")
+print(strassen_result)
