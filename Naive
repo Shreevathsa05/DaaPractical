@@ -1,0 +1,9 @@
+def search(txt, pat):
+    for i in range(len(txt) - len(pat) + 1):
+        if txt[i:i+len(pat)] == pat:
+            print("Pattern found at index", i)
+
+txt = input("Enter text: ")
+pat = input("Enter pattern: ")
+search(txt, pat)
+# Time: O((n-m+1)*m)
